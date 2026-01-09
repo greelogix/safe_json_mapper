@@ -1,0 +1,8 @@
+builders:
+  safe_json_mapper_builder:
+    import: "package:safe_json_mapper/src/generators/builder.dart"
+    builder_factories: ["safeJsonMapperBuilder"]
+    build_extensions: {".dart": [".safe_json_mapper.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
