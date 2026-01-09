@@ -1,9 +1,9 @@
 name: safe_json_mapper
 description: A robust reflection-free JSON mapper for Flutter and Dart. Handles type drift, missing fields, and nested models safely using code generation.
 version: 0.0.2
-homepage: https://github.com/your-repo/safe_model
-repository: https://github.com/your-repo/safe_model
-issue_tracker: https://github.com/your-repo/safe_model/issues
+homepage: https://github.com/greelogix/safe_json_mapper
+repository: https://github.com/greelogix/safe_json_mapper
+issue_tracker: https://github.com/greelogix/safe_json_mapper/issues
 topics:
   - json
   - mapper
