@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.0.5
+
+* **Metadata & Documentation**:
+    * Improved library documentation to follow Dart conventions.
+    * Fixed repository and issue tracker URLs in `pubspec.yaml`.
+    * Synchronized versioning across all files.
+
+## 0.0.4
+
+* **Maintenance**:
+    * Internal improvements and code cleanup.
+    * Updated example projects.
+
+## 0.0.3
+
+* **Bug Fixes**:
+    * Minor fixes in code generation logic.
+
 ## 0.0.2
 
 * **Visual & API Improvements**:

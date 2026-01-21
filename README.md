@@ -1,5 +1,9 @@
 # SafeJsonMapper
 
+
+## 🎬 Demo
+![Safe JSON Mapper Demo](https://raw.githubusercontent.com/greelogix/quick_popup_manager-video/main/safe_json_mapper_demo.gif)
+
 A Flutter/Dart package for safe JSON mapping that handles backend inconsistencies, type drift, and
 nested models with detailed diagnostic logging.
 
