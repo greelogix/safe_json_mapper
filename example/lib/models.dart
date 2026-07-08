@@ -34,8 +34,6 @@ class User {
     required this.tags,
     required this.posts,
   });
-
-  static void register() => _registerUser();
 }
 
 @SafeJson()
@@ -53,8 +51,6 @@ class Profile {
     this.bio,
     required this.score,
   });
-
-  static void register() => _registerProfile();
 }
 
 @SafeJson()
@@ -68,8 +64,6 @@ class Post {
     required this.title,
     required this.content,
   });
-
-  static void register() => _registerPost();
 }
 
 @SafeJson()
@@ -83,14 +77,12 @@ class ApiResponse {
     required this.message,
     this.data,
   });
-
-  static void register() => _registerApiResponse();
 }
 
 // Function to initialize all models
 void initModels() {
-  User.register();
-  Profile.register();
-  Post.register();
-  ApiResponse.register();
+  registerUser();
+  registerProfile();
+  registerPost();
+  registerApiResponse();
 }

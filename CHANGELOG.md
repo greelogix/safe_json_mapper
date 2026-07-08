@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0
+
+* **New Features**:
+  * Generated `operator ==` and `hashCode` using deep equality for lists, maps, nested models, DateTime, and enums.
+  * Generated `toString()` for readable model representations.
+  * All features are available via a generated mixin (e.g., `$UserEqualityMixin`).
+* **Improvements**:
+  * Fixed `copyWith()` method: all parameters are now optional, and omitted values retain their original state.
+  * Simplified generated extensions: only `copyWith()` and `toJson()` remain.
+
 ## 0.0.5
 
 * **Metadata & Documentation**:
