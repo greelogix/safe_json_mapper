@@ -182,9 +182,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     // Mixin for equality, hashCode, and toString
     if (isGenericClass) {
       buffer.writeln(
-          'mixin \$${className}EqualityMixin<$typeParamsWithBounds> {');
+          'mixin \$${className}EqualityMixin<$typeParamsWithBounds> on $className<$typeParamNames> {');
     } else {
-      buffer.writeln('mixin \$${className}EqualityMixin {');
+      buffer.writeln('mixin \$${className}EqualityMixin on $className {');
     }
 
     // operator ==
