@@ -3,7 +3,7 @@ import 'package:safe_json_mapper/safe_json_mapper.dart';
 part 'models.g.dart';
 
 @SafeJson()
-class User with $UserEqualityMixin {
+class User {
   @SafeField(required: true)
   final int id;
 
@@ -37,7 +37,7 @@ class User with $UserEqualityMixin {
 }
 
 @SafeJson()
-class Profile with $ProfileEqualityMixin {
+class Profile {
   @SafeField(required: true, defaultValue: 18)
   final int age;
 
@@ -54,7 +54,7 @@ class Profile with $ProfileEqualityMixin {
 }
 
 @SafeJson()
-class Post with $PostEqualityMixin {
+class Post {
   final String title;
 
   @SafeField(defaultValue: 'No content available')
@@ -67,7 +67,7 @@ class Post with $PostEqualityMixin {
 }
 
 @SafeJson()
-class ApiResponse with $ApiResponseEqualityMixin {
+class ApiResponse {
   final bool success;
   final String message;
   final User? data;

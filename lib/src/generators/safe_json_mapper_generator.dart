@@ -179,62 +179,7 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
 
     buffer.writeln('}');
 
-    // Mixin for equality, hashCode, and toString
-    if (isGenericClass) {
-      buffer.writeln(
-          'mixin \$${className}EqualityMixin<$typeParamsWithBounds> on $className<$typeParamNames> {');
-    } else {
-      buffer.writeln('mixin \$${className}EqualityMixin on $className {');
-    }
-
-    // operator ==
-    buffer.writeln('  @override');
-    buffer.writeln('  bool operator ==(Object other) {');
-    buffer.writeln('    if (identical(this, other)) return true;');
-    if (isGenericClass) {
-      buffer.writeln(
-          '    if (other is! $className<$typeParamNames>) return false;');
-    } else {
-      buffer.writeln('    if (other is! $className) return false;');
-    }
-    for (final field in fields) {
-      final fieldName = field.name;
-      buffer.writeln(
-          "    if (!SafeJsonMapper.deepEquals($fieldName, other.$fieldName)) { return false; }");
-    }
-    buffer.writeln('    return true;');
-    buffer.writeln('  }');
-
-    // hashCode
-    buffer.writeln('  @override');
-    buffer.writeln('  int get hashCode {');
-    if (fields.isEmpty) {
-      buffer.writeln('    return 0;');
-    } else {
-      buffer.write('    return Object.hash(');
-      buffer.writeAll(
-          fields.map((f) => 'SafeJsonMapper.deepHash(${f.name})'), ', ');
-      buffer.writeln(');');
-    }
-    buffer.writeln('  }');
-
-    // toString
-    buffer.writeln('  @override');
-    buffer.writeln('  String toString() {');
-    buffer.writeln("    final buffer = StringBuffer('$className(');");
-    for (int i = 0; i < fields.length; i++) {
-      final field = fields[i];
-      final fieldName = field.name;
-      if (i > 0) buffer.writeln("    buffer.write(', ');");
-      buffer.writeln("    buffer.write('$fieldName: \$$fieldName');");
-    }
-    buffer.writeln("    buffer.write(')');");
-    buffer.writeln('    return buffer.toString();');
-    buffer.writeln('  }');
-
-    buffer.writeln('}');
-
-    // Extension for copyWith and toJson
+    // Extension for copyWith, toJson, equality, and debug string
     if (isGenericClass) {
       buffer.writeln(
           'extension \$${className}SafeJsonExtension<$typeParamsWithBounds> on $className<$typeParamNames> {');
@@ -276,6 +221,48 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
       buffer.write('<$className>');
     }
     buffer.writeln('(this);');
+    buffer.writeln('  }');
+
+    // isEqual method
+    buffer.writeln('  bool isEqual(Object? other) {');
+    buffer.writeln('    if (identical(this, other)) return true;');
+    if (isGenericClass) {
+      buffer.writeln(
+          '    if (other is! $className<$typeParamNames>) return false;');
+    } else {
+      buffer.writeln('    if (other is! $className) return false;');
+    }
+    for (final field in fields) {
+      final fieldName = field.name;
+      buffer.writeln(
+          "    if (!SafeJsonMapper.deepEquals($fieldName, other.$fieldName)) { return false; }");
+    }
+    buffer.writeln('    return true;');
+    buffer.writeln('  }');
+
+    // computeHashCode method
+    buffer.writeln('  int computeHashCode() {');
+    if (fields.isEmpty) {
+      buffer.writeln('    return 0;');
+    } else {
+      buffer.write('    return Object.hash(');
+      buffer.writeAll(
+          fields.map((f) => 'SafeJsonMapper.deepHash(${f.name})'), ', ');
+      buffer.writeln(');');
+    }
+    buffer.writeln('  }');
+
+    // toDebugString method
+    buffer.writeln('  String toDebugString() {');
+    buffer.writeln("    final buffer = StringBuffer('$className(');");
+    for (int i = 0; i < fields.length; i++) {
+      final field = fields[i];
+      final fieldName = field.name;
+      if (i > 0) buffer.writeln("    buffer.write(', ');");
+      buffer.writeln("    buffer.write('$fieldName: \$$fieldName');");
+    }
+    buffer.writeln("    buffer.write(')');");
+    buffer.writeln('    return buffer.toString();');
     buffer.writeln('  }');
 
     buffer.writeln('}');
