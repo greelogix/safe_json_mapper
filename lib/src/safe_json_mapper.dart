@@ -27,10 +27,10 @@ class SafeJsonDrift {
 
   /// Converts this drift to a JSON map for easy logging or debugging.
   Map<String, String> toJson() => {
-        'field': field,
-        'expected': expected,
-        'received': received,
-      };
+    'field': field,
+    'expected': expected,
+    'received': received,
+  };
 
   @override
   String toString() =>
@@ -159,8 +159,9 @@ class SafeJsonMapper {
 
     final provider = _providers[T];
     if (provider == null) {
-      final registeredTypes =
-          _providers.keys.map((t) => t.toString()).join(', ');
+      final registeredTypes = _providers.keys
+          .map((t) => t.toString())
+          .join(', ');
       throw SafeJsonMappingException(
         "No SafeJsonMapper provider registered for type $T. \n"
         "Registered types: [$registeredTypes]. \n"
@@ -198,12 +199,17 @@ class SafeJsonMapper {
   }
 
   static void _recordDrift(
-      String field, String expected, dynamic receivedValue) {
-    _currentDrifts.add(SafeJsonDrift(
-      field: field,
-      expected: expected,
-      received: receivedValue?.toString() ?? 'null',
-    ));
+    String field,
+    String expected,
+    dynamic receivedValue,
+  ) {
+    _currentDrifts.add(
+      SafeJsonDrift(
+        field: field,
+        expected: expected,
+        received: receivedValue?.toString() ?? 'null',
+      ),
+    );
   }
 
   static void _logDriftsIfNeeded() {
@@ -284,8 +290,9 @@ class SafeJsonMapper {
     }
     final result = <String, V>{};
     for (final entry in value.entries) {
-      final key =
-          entry.key is String ? entry.key as String : entry.key.toString();
+      final key = entry.key is String
+          ? entry.key as String
+          : entry.key.toString();
       final mappedValue = valueMapper(entry.value);
       if (mappedValue != null) {
         result[key] = mappedValue;
@@ -324,8 +331,11 @@ class SafeJsonMapper {
   /// - double (via truncation)
   ///
   /// Returns null if conversion fails, recording a drift.
-  static int? toInt(dynamic value, String fieldName,
-      {bool isRequired = false}) {
+  static int? toInt(
+    dynamic value,
+    String fieldName, {
+    bool isRequired = false,
+  }) {
     if (value == null) return null;
     if (value is int) return value;
 
@@ -352,8 +362,11 @@ class SafeJsonMapper {
   /// - String (via parsing)
   ///
   /// Returns null if conversion fails, recording a drift.
-  static double? toDouble(dynamic value, String fieldName,
-      {bool isRequired = false}) {
+  static double? toDouble(
+    dynamic value,
+    String fieldName, {
+    bool isRequired = false,
+  }) {
     if (value == null) return null;
     if (value is double) return value;
 
@@ -383,8 +396,11 @@ class SafeJsonMapper {
   /// - String (via parsing)
   ///
   /// Returns null if conversion fails, recording a drift.
-  static num? toNum(dynamic value, String fieldName,
-      {bool isRequired = false}) {
+  static num? toNum(
+    dynamic value,
+    String fieldName, {
+    bool isRequired = false,
+  }) {
     if (value == null) return null;
     if (value is num) return value;
 
@@ -402,8 +418,11 @@ class SafeJsonMapper {
   /// Safely converts a value to a string.
   ///
   /// Always succeeds by calling `toString()` on the value.
-  static String? asString(dynamic value, String fieldName,
-      {bool isRequired = false}) {
+  static String? asString(
+    dynamic value,
+    String fieldName, {
+    bool isRequired = false,
+  }) {
     if (value == null) return null;
     if (value is String) return value;
     return value.toString();
@@ -416,8 +435,12 @@ class SafeJsonMapper {
   /// - String: parses as int first, or checks for "true"/"false"
   ///
   /// Returns null if conversion fails, recording a drift.
-  static bool? toBool(dynamic value, String fieldName,
-      {bool fromInt = false, bool isRequired = false}) {
+  static bool? toBool(
+    dynamic value,
+    String fieldName, {
+    bool fromInt = false,
+    bool isRequired = false,
+  }) {
     if (value == null) return null;
     if (value is bool) return value;
 
@@ -453,8 +476,11 @@ class SafeJsonMapper {
   /// - double (seconds since epoch with decimal milliseconds)
   ///
   /// Returns null if conversion fails, recording a drift.
-  static DateTime? toDateTime(dynamic value, String fieldName,
-      {bool isRequired = false}) {
+  static DateTime? toDateTime(
+    dynamic value,
+    String fieldName, {
+    bool isRequired = false,
+  }) {
     if (value == null) return null;
     if (value is DateTime) return value;
 
@@ -552,8 +578,11 @@ class SafeJsonMapper {
   }
 
   /// Safely converts a list of values to a list of bools.
-  static List<bool>? toBoolList(dynamic value, String fieldName,
-      {bool fromInt = false}) {
+  static List<bool>? toBoolList(
+    dynamic value,
+    String fieldName, {
+    bool fromInt = false,
+  }) {
     return _mapList<bool>(
       value,
       fieldName,
@@ -615,8 +644,11 @@ class SafeJsonMapper {
   }
 
   /// Safely converts a map of values to a map of strings to bools.
-  static Map<String, bool>? toBoolMap(dynamic value, String fieldName,
-      {bool fromInt = false}) {
+  static Map<String, bool>? toBoolMap(
+    dynamic value,
+    String fieldName, {
+    bool fromInt = false,
+  }) {
     return _mapMap<bool>(
       value,
       fieldName,
@@ -626,11 +658,7 @@ class SafeJsonMapper {
 
   /// Safely converts a map of values to a map of strings to DateTimes.
   static Map<String, DateTime>? toDateTimeMap(dynamic value, String fieldName) {
-    return _mapMap<DateTime>(
-      value,
-      fieldName,
-      (v) => toDateTime(v, fieldName),
-    );
+    return _mapMap<DateTime>(value, fieldName, (v) => toDateTime(v, fieldName));
   }
 
   /// Safely converts a map of values to a map of strings to enums.
@@ -669,8 +697,9 @@ class SafeJsonMapper {
   static JsonMap toJson<T>(T instance) {
     final provider = _providers[T];
     if (provider == null) {
-      final registeredTypes =
-          _providers.keys.map((t) => t.toString()).join(', ');
+      final registeredTypes = _providers.keys
+          .map((t) => t.toString())
+          .join(', ');
       throw SafeJsonMappingException(
         "No SafeJsonMapper provider registered for type $T. \n"
         "Registered types: [$registeredTypes]. \n"
@@ -715,8 +744,9 @@ class SafeJsonMapper {
     if (value is Map) {
       final result = <String, dynamic>{};
       for (final entry in value.entries) {
-        final key =
-            entry.key is String ? entry.key as String : entry.key.toString();
+        final key = entry.key is String
+            ? entry.key as String
+            : entry.key.toString();
         result[key] = _serializeValue(entry.value);
       }
       return result;
@@ -785,7 +815,8 @@ class SafeJsonMapper {
       final entries = value.entries.toList()
         ..sort((a, b) => a.key.toString().compareTo(b.key.toString()));
       return Object.hashAll(
-          entries.map((e) => Object.hash(deepHash(e.key), deepHash(e.value))));
+        entries.map((e) => Object.hash(deepHash(e.key), deepHash(e.value))),
+      );
     }
 
     return value.hashCode;
@@ -822,6 +853,7 @@ class SafeJsonMapper {
 
 /// Built-in converter for Duration (converts from/to milliseconds).
 class SafeDurationConverter implements SafeJsonConverter<Duration> {
+  /// Creates a stateless converter.
   const SafeDurationConverter();
 
   @override
@@ -841,6 +873,7 @@ class SafeDurationConverter implements SafeJsonConverter<Duration> {
 
 /// Built-in converter for Uri.
 class SafeUriConverter implements SafeJsonConverter<Uri> {
+  /// Creates a stateless converter.
   const SafeUriConverter();
 
   @override
@@ -865,6 +898,7 @@ class SafeUriConverter implements SafeJsonConverter<Uri> {
 
 /// Built-in converter for BigInt.
 class SafeBigIntConverter implements SafeJsonConverter<BigInt> {
+  /// Creates a stateless converter.
   const SafeBigIntConverter();
 
   @override

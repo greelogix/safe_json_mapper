@@ -16,21 +16,23 @@ A robust, reflection-free Flutter/Dart package for safe JSON mapping. Handles ba
 - **Nested JSON Paths**: Extract values from deep within JSON using dot-separated paths.
 - **Custom Converters**: Plug in your own logic for types like Duration, Uri, or BigInt.
 - **Detailed Diagnostics**: Structured logs of all type mismatches and missing fields.
-- **Error Policies**: Choose to throw, log, or silently ignore issues.
+- **Error Policies**: Choose to throw, log, or silently use fallback values.
 - **Generated Extensions**: Includes `copyWith` and `toJson`.
-- **Generated Equality & String**: Mixin for `operator ==`, `hashCode`, and `toString()`.
+- **Generated Equality & String**: Extensions for `isEqual`, `computeHashCode`, and `toDebugString`.
 
 
 ## Installation
+
+Requires Dart 3.11 or later (or a Flutter SDK bundling Dart 3.11 or later).
 
 Add these dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  safe_json_mapper: ^0.1.0
+  safe_json_mapper: ^0.1.1
 
 dev_dependencies:
-  build_runner: ^2.4.0
+  build_runner: ^2.16.2
 ```
 
 
@@ -44,7 +46,7 @@ import 'package:safe_json_mapper/safe_json_mapper.dart';
 part 'user.g.dart';
 
 @SafeJson()
-class User with $UserEqualityMixin {
+class User {
   @SafeField(required: true)
   final int id;
 
@@ -68,7 +70,7 @@ class User with $UserEqualityMixin {
 }
 
 @SafeJson()
-class Profile with $ProfileEqualityMixin {
+class Profile {
   @SafeField(required: true, defaultValue: 18)
   final int age;
 
@@ -85,7 +87,7 @@ class Profile with $ProfileEqualityMixin {
 ### 2. Generate Code
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 
@@ -119,7 +121,7 @@ void main() {
   print(user.isActive);       // true
   print(user.tags);           // [developer, flutter]
   print(user.profile?.age);   // 30
-  print(user.toString());     // User(id: 123, name: John Doe, isActive: true, profile: Profile(age: 30, bio: Software Engineer), tags: [developer, flutter])
+  print(user.toDebugString());     // Readable field values
 
   // Use copyWith
   final updatedUser = user.copyWith(name: "Jane Doe");
@@ -131,9 +133,9 @@ void main() {
     name: "John Doe",
     isActive: true,
     tags: ["developer", "flutter"],
-    profile: Profile(age: 30, bio: "Software Engineer"),
+    profile: user.profile,
   );
-  print(user == sameUser);    // true
+  print(user.isEqual(sameUser));    // true
 
   // Serialize back to JSON
   final backToJson = SafeJsonMapper.toJson(user);
@@ -191,7 +193,9 @@ print(drifts);
 
 ## Built-in Converters
 
-Use these for common types:
+Register these converters for serialization of common types.
+For deserialization, call the converter’s `fromJson` method explicitly;
+the generator does not yet apply registered converters to fields.
 
 | Converter | Description |
 |-----------|-------------|
@@ -212,7 +216,7 @@ void main() {
 
 ## Best Practices
 
-- **Add the Generated Mixin**: Use `with $ModelNameEqualityMixin` for `operator==`, `hashCode`, and `toString()`.
+- **Use Generated Extensions**: Call `isEqual`, `computeHashCode`, and `toDebugString` for structural comparisons and readable output.
 - **Register All Models**: Call `register<ModelName>()` for all your models once (e.g., in `main()`).
 - **Use `@SafeField(name: "...")`**: For fields that map to a different JSON key.
 - **Use Aliases**: (`@SafeField(aliases: ["key1", "key2"])`) when supporting multiple key names.
@@ -225,7 +229,7 @@ Try:
 ```bash
 dart pub get
 dart run build_runner clean
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 ```
 
 ### Missing Generated Files
@@ -233,6 +237,13 @@ dart run build_runner build --delete-conflicting-outputs
 - Make sure your model has `@SafeJson()`
 - Run `dart analyze` to check for issues
 
+
+## Maintainer
+
+Published by [Greelogix](https://pub.dev/publishers/greelogix.com/packages).
+Maintained by [Bilal Imran (@bilalatgreelogix)](https://github.com/bilalatgreelogix),
+[bilal.imran@greelogix.com](mailto:bilal.imran@greelogix.com).
+Report bugs through the [GitHub issue tracker](https://github.com/greelogix/safe_json_mapper/issues).
 
 ## License
 

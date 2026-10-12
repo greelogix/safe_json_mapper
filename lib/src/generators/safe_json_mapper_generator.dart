@@ -25,17 +25,20 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     final isGenericClass = element.typeParameters.isNotEmpty;
     final typeParameters = element.typeParameters;
     final typeParamNames = typeParameters.map((tp) => tp.name).join(', ');
-    final typeParamsWithBounds = typeParameters.map((tp) {
-      final name = tp.name;
-      final bound = tp.bound;
-      if (bound != null) {
-        return '$name extends ${bound.getDisplayString()}';
-      }
-      return name;
-    }).join(', ');
+    final typeParamsWithBounds = typeParameters
+        .map((tp) {
+          final name = tp.name;
+          final bound = tp.bound;
+          if (bound != null) {
+            return '$name extends ${bound.getDisplayString()}';
+          }
+          return name;
+        })
+        .join(', ');
 
-    final fields =
-        element.fields.where((f) => !f.isStatic && !f.isSynthetic).toList();
+    final fields = element.fields
+        .where((f) => !f.isStatic && f.isOriginDeclaration)
+        .toList();
 
     final buffer = StringBuffer();
 
@@ -50,7 +53,8 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     buffer.writeln('  @override');
     if (isGenericClass) {
       buffer.writeln(
-          '  $className<$typeParamNames> fromJson(Map<String, dynamic> json) {');
+        '  $className<$typeParamNames> fromJson(Map<String, dynamic> json) {',
+      );
     } else {
       buffer.writeln('  $className fromJson(Map<String, dynamic> json) {');
     }
@@ -59,11 +63,14 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     for (final field in fields) {
       final safeField = _getSafeField(field);
       final safeIgnoreChecker = TypeChecker.fromUrl(
-          'package:safe_json_mapper/src/annotations.dart#SafeIgnore');
+        'package:safe_json_mapper/src/annotations.dart#SafeIgnore',
+      );
       final safeIgnoreFromJsonChecker = TypeChecker.fromUrl(
-          'package:safe_json_mapper/src/annotations.dart#SafeIgnoreFromJson');
+        'package:safe_json_mapper/src/annotations.dart#SafeIgnoreFromJson',
+      );
 
-      final shouldIgnoreFromJson = safeField?.ignore == true ||
+      final shouldIgnoreFromJson =
+          safeField?.ignore == true ||
           safeIgnoreChecker.hasAnnotationOfExact(field) ||
           safeIgnoreFromJsonChecker.hasAnnotationOfExact(field);
 
@@ -149,7 +156,8 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     buffer.writeln('  @override');
     if (isGenericClass) {
       buffer.writeln(
-          '  Map<String, dynamic> toJson($className<$typeParamNames> instance) {');
+        '  Map<String, dynamic> toJson($className<$typeParamNames> instance) {',
+      );
     } else {
       buffer.writeln('  Map<String, dynamic> toJson($className instance) {');
     }
@@ -157,11 +165,14 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     for (final field in fields) {
       final safeField = _getSafeField(field);
       final safeIgnoreChecker = TypeChecker.fromUrl(
-          'package:safe_json_mapper/src/annotations.dart#SafeIgnore');
+        'package:safe_json_mapper/src/annotations.dart#SafeIgnore',
+      );
       final safeIgnoreToJsonChecker = TypeChecker.fromUrl(
-          'package:safe_json_mapper/src/annotations.dart#SafeIgnoreToJson');
+        'package:safe_json_mapper/src/annotations.dart#SafeIgnoreToJson',
+      );
 
-      final shouldIgnoreToJson = safeField?.ignore == true ||
+      final shouldIgnoreToJson =
+          safeField?.ignore == true ||
           safeIgnoreChecker.hasAnnotationOfExact(field) ||
           safeIgnoreToJsonChecker.hasAnnotationOfExact(field);
 
@@ -172,7 +183,8 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
       final fieldName = field.name;
       final jsonKey = safeField?.name ?? fieldName;
       buffer.writeln(
-          "    result['$jsonKey'] = SafeJsonMapper.serializeValue(instance.$fieldName);");
+        "    result['$jsonKey'] = SafeJsonMapper.serializeValue(instance.$fieldName);",
+      );
     }
     buffer.writeln('    return result;');
     buffer.writeln('  }');
@@ -182,10 +194,12 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     // Extension for copyWith, toJson, equality, and debug string
     if (isGenericClass) {
       buffer.writeln(
-          'extension \$${className}SafeJsonExtension<$typeParamsWithBounds> on $className<$typeParamNames> {');
+        'extension \$${className}SafeJsonExtension<$typeParamsWithBounds> on $className<$typeParamNames> {',
+      );
     } else {
-      buffer
-          .writeln('extension \$${className}SafeJsonExtension on $className {');
+      buffer.writeln(
+        'extension \$${className}SafeJsonExtension on $className {',
+      );
     }
 
     // copyWith
@@ -206,8 +220,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     buffer.writeln('(');
     for (final field in fields) {
       // Use this.fieldName if parameter is null
-      buffer
-          .writeln('      ${field.name}: ${field.name} ?? this.${field.name},');
+      buffer.writeln(
+        '      ${field.name}: ${field.name} ?? this.${field.name},',
+      );
     }
     buffer.writeln('    );');
     buffer.writeln('  }');
@@ -228,14 +243,16 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     buffer.writeln('    if (identical(this, other)) return true;');
     if (isGenericClass) {
       buffer.writeln(
-          '    if (other is! $className<$typeParamNames>) return false;');
+        '    if (other is! $className<$typeParamNames>) return false;',
+      );
     } else {
       buffer.writeln('    if (other is! $className) return false;');
     }
     for (final field in fields) {
       final fieldName = field.name;
       buffer.writeln(
-          "    if (!SafeJsonMapper.deepEquals($fieldName, other.$fieldName)) { return false; }");
+        "    if (!SafeJsonMapper.deepEquals($fieldName, other.$fieldName)) { return false; }",
+      );
     }
     buffer.writeln('    return true;');
     buffer.writeln('  }');
@@ -245,10 +262,12 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
     if (fields.isEmpty) {
       buffer.writeln('    return 0;');
     } else {
-      buffer.write('    return Object.hash(');
+      buffer.write('    return Object.hashAll([');
       buffer.writeAll(
-          fields.map((f) => 'SafeJsonMapper.deepHash(${f.name})'), ', ');
-      buffer.writeln(');');
+        fields.map((f) => 'SafeJsonMapper.deepHash(${f.name})'),
+        ', ',
+      );
+      buffer.writeln(']);');
     }
     buffer.writeln('  }');
 
@@ -273,12 +292,14 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
       // For generic models, we can't auto-register, so generate a helper that takes type args
       buffer.writeln('void register$className<$typeParamsWithBounds>() {');
       buffer.writeln(
-          '  SafeJsonMapper.register<$className<$typeParamNames>>($generatedClassName<$typeParamNames>());');
+        '  SafeJsonMapper.register<$className<$typeParamNames>>($generatedClassName<$typeParamNames>());',
+      );
       buffer.writeln('}');
     } else {
       buffer.writeln('void register$className() {');
       buffer.writeln(
-          '  SafeJsonMapper.register<$className>($generatedClassName());');
+        '  SafeJsonMapper.register<$className>($generatedClassName());',
+      );
       buffer.writeln('}');
     }
 
@@ -287,15 +308,20 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
 
   SafeField? _getSafeField(FieldElement field) {
     final checker = TypeChecker.fromUrl(
-        'package:safe_json_mapper/src/annotations.dart#SafeField');
+      'package:safe_json_mapper/src/annotations.dart#SafeField',
+    );
     final boolChecker = TypeChecker.fromUrl(
-        'package:safe_json_mapper/src/annotations.dart#SafeBool');
+      'package:safe_json_mapper/src/annotations.dart#SafeBool',
+    );
     final numChecker = TypeChecker.fromUrl(
-        'package:safe_json_mapper/src/annotations.dart#SafeNum');
+      'package:safe_json_mapper/src/annotations.dart#SafeNum',
+    );
     final safeDefaultChecker = TypeChecker.fromUrl(
-        'package:safe_json_mapper/src/annotations.dart#SafeDefault');
+      'package:safe_json_mapper/src/annotations.dart#SafeDefault',
+    );
     final safeIgnoreChecker = TypeChecker.fromUrl(
-        'package:safe_json_mapper/src/annotations.dart#SafeIgnore');
+      'package:safe_json_mapper/src/annotations.dart#SafeIgnore',
+    );
 
     dynamic defaultValue;
     bool ignore = false;
@@ -324,19 +350,21 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
       final aliasesList = reader.read('aliases').isNull
           ? null
           : (reader
-              .read('aliases')
-              .listValue
-              .map((e) => e.toStringValue())
-              .whereType<String>()
-              .toList());
+                .read('aliases')
+                .listValue
+                .map((e) => e.toStringValue())
+                .whereType<String>()
+                .toList());
       return SafeBool(
         required: reader.read('required').boolValue,
         defaultValue: defaultValue ?? fieldDefault,
-        name:
-            reader.read('name').isNull ? null : reader.read('name').stringValue,
+        name: reader.read('name').isNull
+            ? null
+            : reader.read('name').stringValue,
         aliases: aliasesList?.isEmpty == true ? null : aliasesList,
-        path:
-            reader.read('path').isNull ? null : reader.read('path').stringValue,
+        path: reader.read('path').isNull
+            ? null
+            : reader.read('path').stringValue,
         ignore: ignore,
         fromInt: reader.read('fromInt').boolValue,
       );
@@ -351,19 +379,21 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
       final aliasesList = reader.read('aliases').isNull
           ? null
           : (reader
-              .read('aliases')
-              .listValue
-              .map((e) => e.toStringValue())
-              .whereType<String>()
-              .toList());
+                .read('aliases')
+                .listValue
+                .map((e) => e.toStringValue())
+                .whereType<String>()
+                .toList());
       return SafeNum(
         required: reader.read('required').boolValue,
         defaultValue: defaultValue ?? fieldDefault,
-        name:
-            reader.read('name').isNull ? null : reader.read('name').stringValue,
+        name: reader.read('name').isNull
+            ? null
+            : reader.read('name').stringValue,
         aliases: aliasesList?.isEmpty == true ? null : aliasesList,
-        path:
-            reader.read('path').isNull ? null : reader.read('path').stringValue,
+        path: reader.read('path').isNull
+            ? null
+            : reader.read('path').stringValue,
         ignore: ignore,
       );
     }
@@ -377,36 +407,40 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
       final aliasesList = reader.read('aliases').isNull
           ? null
           : (reader
-              .read('aliases')
-              .listValue
-              .map((e) => e.toStringValue())
-              .whereType<String>()
-              .toList());
+                .read('aliases')
+                .listValue
+                .map((e) => e.toStringValue())
+                .whereType<String>()
+                .toList());
       return SafeField(
         required: reader.read('required').boolValue,
         defaultValue: defaultValue ?? fieldDefault,
-        name:
-            reader.read('name').isNull ? null : reader.read('name').stringValue,
+        name: reader.read('name').isNull
+            ? null
+            : reader.read('name').stringValue,
         aliases: aliasesList?.isEmpty == true ? null : aliasesList,
-        path:
-            reader.read('path').isNull ? null : reader.read('path').stringValue,
+        path: reader.read('path').isNull
+            ? null
+            : reader.read('path').stringValue,
         ignore: ignore,
       );
     }
 
     if (defaultValue != null || ignore) {
-      return SafeField(
-        defaultValue: defaultValue,
-        ignore: ignore,
-      );
+      return SafeField(defaultValue: defaultValue, ignore: ignore);
     }
 
     return null;
   }
 
-  String _generateMappingExpression(FieldElement field, String jsonKey,
-      SafeField? safeField, bool isNullable, String fallback,
-      {bool skipFallback = false}) {
+  String _generateMappingExpression(
+    FieldElement field,
+    String jsonKey,
+    SafeField? safeField,
+    bool isNullable,
+    String fallback, {
+    bool skipFallback = false,
+  }) {
     final type = field.type;
     final typeNameWithNull = type.getDisplayString();
     final typeName = typeNameWithNull.endsWith('?')
@@ -463,7 +497,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
         final elementTypeNameWithNull = elementType.getDisplayString();
         final elementTypeName = elementTypeNameWithNull.endsWith('?')
             ? elementTypeNameWithNull.substring(
-                0, elementTypeNameWithNull.length - 1)
+                0,
+                elementTypeNameWithNull.length - 1,
+              )
             : elementTypeNameWithNull;
 
         String expr;
@@ -513,7 +549,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
         final valueTypeNameWithNull = valueType.getDisplayString();
         final valueTypeName = valueTypeNameWithNull.endsWith('?')
             ? valueTypeNameWithNull.substring(
-                0, valueTypeNameWithNull.length - 1)
+                0,
+                valueTypeNameWithNull.length - 1,
+              )
             : valueTypeNameWithNull;
 
         String expr;
@@ -643,7 +681,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
         final elementTypeNameWithNull = elementType.getDisplayString();
         final elementTypeName = elementTypeNameWithNull.endsWith('?')
             ? elementTypeNameWithNull.substring(
-                0, elementTypeNameWithNull.length - 1)
+                0,
+                elementTypeNameWithNull.length - 1,
+              )
             : elementTypeNameWithNull;
 
         String expr;
@@ -692,7 +732,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
         final valueTypeNameWithNull = valueType.getDisplayString();
         final valueTypeName = valueTypeNameWithNull.endsWith('?')
             ? valueTypeNameWithNull.substring(
-                0, valueTypeNameWithNull.length - 1)
+                0,
+                valueTypeNameWithNull.length - 1,
+              )
             : valueTypeNameWithNull;
 
         String expr;
@@ -805,7 +847,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
         final elementTypeNameWithNull = elementType.getDisplayString();
         final elementTypeName = elementTypeNameWithNull.endsWith('?')
             ? elementTypeNameWithNull.substring(
-                0, elementTypeNameWithNull.length - 1)
+                0,
+                elementTypeNameWithNull.length - 1,
+              )
             : elementTypeNameWithNull;
 
         String expr;
@@ -854,7 +898,9 @@ class SafeJsonModelGenerator extends GeneratorForAnnotation<SafeJson> {
         final valueTypeNameWithNull = valueType.getDisplayString();
         final valueTypeName = valueTypeNameWithNull.endsWith('?')
             ? valueTypeNameWithNull.substring(
-                0, valueTypeNameWithNull.length - 1)
+                0,
+                valueTypeNameWithNull.length - 1,
+              )
             : valueTypeNameWithNull;
 
         String expr;

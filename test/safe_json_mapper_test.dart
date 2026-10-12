@@ -55,7 +55,9 @@ void main() {
     test('toDateTime conversions from int (millis since epoch)', () {
       final date = DateTime(2023, 10, 5, 14, 30);
       expect(
-          SafeJsonMapper.toDateTime(date.millisecondsSinceEpoch, 'test'), date);
+        SafeJsonMapper.toDateTime(date.millisecondsSinceEpoch, 'test'),
+        date,
+      );
     });
 
     test('toDateTime conversions from double (seconds since epoch)', () {
@@ -66,38 +68,52 @@ void main() {
 
     test('toEnum conversions from string', () {
       expect(
-          SafeJsonMapper.toEnum<TestStatus>(
-              'active', 'test', TestStatus.values),
-          TestStatus.active);
+        SafeJsonMapper.toEnum<TestStatus>('active', 'test', TestStatus.values),
+        TestStatus.active,
+      );
       expect(
-          SafeJsonMapper.toEnum<TestStatus>(
-              'ACTIVE', 'test', TestStatus.values),
-          TestStatus.active);
+        SafeJsonMapper.toEnum<TestStatus>('ACTIVE', 'test', TestStatus.values),
+        TestStatus.active,
+      );
       expect(
-          SafeJsonMapper.toEnum<TestStatus>(
-              'inactive', 'test', TestStatus.values),
-          TestStatus.inactive);
+        SafeJsonMapper.toEnum<TestStatus>(
+          'inactive',
+          'test',
+          TestStatus.values,
+        ),
+        TestStatus.inactive,
+      );
       expect(
-          SafeJsonMapper.toEnum<TestStatus>(
-              'pending', 'test', TestStatus.values),
-          TestStatus.pending);
+        SafeJsonMapper.toEnum<TestStatus>('pending', 'test', TestStatus.values),
+        TestStatus.pending,
+      );
     });
 
     test('toEnum conversions from int', () {
-      expect(SafeJsonMapper.toEnum<TestStatus>(0, 'test', TestStatus.values),
-          TestStatus.active);
-      expect(SafeJsonMapper.toEnum<TestStatus>(1, 'test', TestStatus.values),
-          TestStatus.inactive);
-      expect(SafeJsonMapper.toEnum<TestStatus>(2, 'test', TestStatus.values),
-          TestStatus.pending);
+      expect(
+        SafeJsonMapper.toEnum<TestStatus>(0, 'test', TestStatus.values),
+        TestStatus.active,
+      );
+      expect(
+        SafeJsonMapper.toEnum<TestStatus>(1, 'test', TestStatus.values),
+        TestStatus.inactive,
+      );
+      expect(
+        SafeJsonMapper.toEnum<TestStatus>(2, 'test', TestStatus.values),
+        TestStatus.pending,
+      );
     });
 
     test('toEnum with unknown value', () {
       expect(
-          SafeJsonMapper.toEnum<TestStatus>(
-              'unknown', 'test', TestStatus.values,
-              unknownValue: TestStatus.pending),
-          TestStatus.pending);
+        SafeJsonMapper.toEnum<TestStatus>(
+          'unknown',
+          'test',
+          TestStatus.values,
+          unknownValue: TestStatus.pending,
+        ),
+        TestStatus.pending,
+      );
     });
 
     test('toIntList conversions', () {
@@ -108,18 +124,30 @@ void main() {
     });
 
     test('toDoubleList conversions', () {
-      expect(SafeJsonMapper.toDoubleList([1.1, 2.2, 3.3], 'test'),
-          [1.1, 2.2, 3.3]);
+      expect(SafeJsonMapper.toDoubleList([1.1, 2.2, 3.3], 'test'), [
+        1.1,
+        2.2,
+        3.3,
+      ]);
       expect(SafeJsonMapper.toDoubleList([1, 2, 3], 'test'), [1.0, 2.0, 3.0]);
-      expect(SafeJsonMapper.toDoubleList(['1.1', '2.2', '3.3'], 'test'),
-          [1.1, 2.2, 3.3]);
+      expect(SafeJsonMapper.toDoubleList(['1.1', '2.2', '3.3'], 'test'), [
+        1.1,
+        2.2,
+        3.3,
+      ]);
     });
 
     test('toStringList conversions', () {
-      expect(SafeJsonMapper.toStringList(['a', 'b', 'c'], 'test'),
-          ['a', 'b', 'c']);
-      expect(SafeJsonMapper.toStringList([1, true, 3.14], 'test'),
-          ['1', 'true', '3.14']);
+      expect(SafeJsonMapper.toStringList(['a', 'b', 'c'], 'test'), [
+        'a',
+        'b',
+        'c',
+      ]);
+      expect(SafeJsonMapper.toStringList([1, true, 3.14], 'test'), [
+        '1',
+        'true',
+        '3.14',
+      ]);
     });
 
     test('toDateTimeList conversions', () {
@@ -130,27 +158,43 @@ void main() {
 
     test('toEnumList conversions', () {
       expect(
-          SafeJsonMapper.toEnumList<TestStatus>(
-              ['active', 'inactive'], 'test', TestStatus.values),
-          [TestStatus.active, TestStatus.inactive]);
+        SafeJsonMapper.toEnumList<TestStatus>(
+          ['active', 'inactive'],
+          'test',
+          TestStatus.values,
+        ),
+        [TestStatus.active, TestStatus.inactive],
+      );
       expect(
-          SafeJsonMapper.toEnumList<TestStatus>(
-              [0, 1, 2], 'test', TestStatus.values),
-          [TestStatus.active, TestStatus.inactive, TestStatus.pending]);
+        SafeJsonMapper.toEnumList<TestStatus>(
+          [0, 1, 2],
+          'test',
+          TestStatus.values,
+        ),
+        [TestStatus.active, TestStatus.inactive, TestStatus.pending],
+      );
     });
 
     test('toIntMap conversions', () {
-      expect(
-          SafeJsonMapper.toIntMap({'a': 1, 'b': 2}, 'test'), {'a': 1, 'b': 2});
-      expect(SafeJsonMapper.toIntMap({'a': '1', 'b': '2'}, 'test'),
-          {'a': 1, 'b': 2});
+      expect(SafeJsonMapper.toIntMap({'a': 1, 'b': 2}, 'test'), {
+        'a': 1,
+        'b': 2,
+      });
+      expect(SafeJsonMapper.toIntMap({'a': '1', 'b': '2'}, 'test'), {
+        'a': 1,
+        'b': 2,
+      });
     });
 
     test('toStringMap conversions', () {
-      expect(SafeJsonMapper.toStringMap({'a': 'hello', 'b': 'world'}, 'test'),
-          {'a': 'hello', 'b': 'world'});
-      expect(SafeJsonMapper.toStringMap({'a': 123, 'b': true}, 'test'),
-          {'a': '123', 'b': 'true'});
+      expect(SafeJsonMapper.toStringMap({'a': 'hello', 'b': 'world'}, 'test'), {
+        'a': 'hello',
+        'b': 'world',
+      });
+      expect(SafeJsonMapper.toStringMap({'a': 123, 'b': true}, 'test'), {
+        'a': '123',
+        'b': 'true',
+      });
     });
   });
 

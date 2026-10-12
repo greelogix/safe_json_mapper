@@ -33,3 +33,7 @@ migrate_working_dir/
 /coverage/
 *.g.dart
 *.g.part
+
+# Keep runnable examples and integration fixtures in release archives.
+!test/fixtures/*.g.dart
+!example/safe_json_mapper_example.g.dart

@@ -6,3 +6,16 @@ builders:
     auto_apply: dependents
     build_to: cache
     applies_builders: ["source_gen|combining_builder"]
+
+targets:
+  $default:
+    builders:
+      safe_json_mapper|safe_json_mapper_builder:
+        enabled: true
+        generate_for:
+          - test/fixtures/models.dart
+          - example/safe_json_mapper_example.dart
+      source_gen|combining_builder:
+        generate_for:
+          - test/fixtures/models.dart
+          - example/safe_json_mapper_example.dart
