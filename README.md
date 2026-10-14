@@ -29,7 +29,7 @@ Add these dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  safe_json_mapper: ^0.1.2
+  safe_json_mapper: ^0.1.3
 
 dev_dependencies:
   build_runner: ^2.16.2
@@ -241,3 +241,13 @@ dart run build_runner build
 ## License
 
 MIT
+
+## Maintained By [#](https://pub.dev/packages/safe_json_mapper#maintained-by)
+
+**GreeLogix** — Flutter, Laravel & AI Development Agency
+
+GreeLogix builds Flutter applications, Laravel backends, and AI-powered products,
+and maintains reusable packages that help developers build better software.
+
+🌐 [https://greelogix.com](https://greelogix.com)\
+📩 [hello@greelogix.com](mailto:hello@greelogix.com)

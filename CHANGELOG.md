@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+- Add a GreeLogix agency description and company contact details to the README.
+
 ## 0.1.2
 
 - Remove the README maintainer section and personal contact details.
