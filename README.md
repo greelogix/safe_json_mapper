@@ -29,7 +29,7 @@ Add these dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  safe_json_mapper: ^0.1.1
+  safe_json_mapper: ^0.1.2
 
 dev_dependencies:
   build_runner: ^2.16.2
@@ -237,13 +237,6 @@ dart run build_runner build
 - Make sure your model has `@SafeJson()`
 - Run `dart analyze` to check for issues
 
-
-## Maintainer
-
-Published by [Greelogix](https://pub.dev/publishers/greelogix.com/packages).
-Maintained by [Bilal Imran (@bilalatgreelogix)](https://github.com/bilalatgreelogix),
-[bilal.imran@greelogix.com](mailto:bilal.imran@greelogix.com).
-Report bugs through the [GitHub issue tracker](https://github.com/greelogix/safe_json_mapper/issues).
 
 ## License
 

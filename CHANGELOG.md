@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+- Remove the README maintainer section and personal contact details.
+
 ## 0.1.1
 
 * Update analyzer, source_gen, and build constraints to support current stable releases.
