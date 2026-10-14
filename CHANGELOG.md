@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Update the Maintained By section with the GreeLogix company description.
+
 ## 0.1.3
 
 - Add a GreeLogix agency description and company contact details to the README.

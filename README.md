@@ -29,7 +29,7 @@ Add these dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  safe_json_mapper: ^0.1.3
+  safe_json_mapper: ^0.1.4
 
 dev_dependencies:
   build_runner: ^2.16.2
@@ -246,8 +246,7 @@ MIT
 
 **GreeLogix** — Flutter, Laravel & AI Development Agency
 
-GreeLogix builds Flutter applications, Laravel backends, and AI-powered products,
-and maintains reusable packages that help developers build better software.
+GreeLogix is a senior software agency for startups, SMEs, nonprofits, and international teams who need AI products, custom web & mobile apps, Laravel & Flutter builds, and QA — delivered in weeks, not quarters.
 
 🌐 [https://greelogix.com](https://greelogix.com)\
 📩 [hello@greelogix.com](mailto:hello@greelogix.com)
