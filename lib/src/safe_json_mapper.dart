@@ -314,8 +314,10 @@ class SafeJsonMapper {
     if (value == null) {
       final typeInfo = T.toString();
       _recordDrift(fieldName, '$typeInfo -> required', null);
-      _logDriftsIfNeeded();
-      _throwIfNeeded();
+      if (errorPolicy == SafeJsonModelErrorPolicy.throwError) {
+        _logDriftsIfNeeded();
+        _throwIfNeeded();
+      }
       return fallback;
     }
     return value;

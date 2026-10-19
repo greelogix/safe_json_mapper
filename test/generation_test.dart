@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:safe_json_mapper/safe_json_mapper.dart';
 import 'package:test/test.dart';
 import 'fixtures/models.dart';
@@ -69,6 +71,23 @@ void main() {
     expect(
       () => SafeJsonMapper.fromJson<Account>({}),
       throwsA(isA<SafeJsonMappingException>()),
+    );
+  });
+
+  test('logAndDefault reports a required-field drift once', () {
+    SafeJsonMapper.errorPolicy = SafeJsonModelErrorPolicy.logAndDefault;
+    final output = <String>[];
+
+    runZoned(
+      () => SafeJsonMapper.fromJson<Account>({}),
+      zoneSpecification: ZoneSpecification(
+        print: (_, _, _, message) => output.add(message),
+      ),
+    );
+
+    expect(
+      output.where((line) => line == '[SafeJsonMapper] Drift detected:'),
+      hasLength(1),
     );
   });
 }

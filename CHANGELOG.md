@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5
+
+- Add secure GitHub Actions CI and OIDC-based pub.dev publishing automation.
+- Prevent duplicate drift diagnostics for missing required fields under the
+  `logAndDefault` policy.
+
 ## 0.1.4
 
 - Update the Maintained By section with the GreeLogix company description.
