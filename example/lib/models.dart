@@ -46,11 +46,7 @@ class Profile {
   @SafeNum(defaultValue: 0)
   final num score;
 
-  Profile({
-    required this.age,
-    this.bio,
-    required this.score,
-  });
+  Profile({required this.age, this.bio, required this.score});
 }
 
 @SafeJson()
@@ -60,10 +56,7 @@ class Post {
   @SafeField(defaultValue: 'No content available')
   final String content;
 
-  Post({
-    required this.title,
-    required this.content,
-  });
+  Post({required this.title, required this.content});
 }
 
 @SafeJson()
@@ -72,11 +65,7 @@ class ApiResponse {
   final String message;
   final User? data;
 
-  ApiResponse({
-    required this.success,
-    required this.message,
-    this.data,
-  });
+  ApiResponse({required this.success, required this.message, this.data});
 }
 
 // Function to initialize all models

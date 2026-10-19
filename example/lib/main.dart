@@ -48,7 +48,8 @@ class _SafeModelDemoState extends State<SafeModelDemo> {
       final user = SafeJsonMapper.fromJson<User>(json);
       setState(() {
         _jsonInput = _prettyJson(json);
-        _result = """
+        _result =
+            """
 Scenario: $title
 Result: ✅ PARSED
 -----------------------------
@@ -75,7 +76,8 @@ Profile: ${user.profile != null ? "Age ${user.profile!.age}" : "None"}
       setState(() {
         _jsonInput = _prettyJson(json);
         final user = response.data;
-        _result = """
+        _result =
+            """
 Scenario: $title
 Result: ${response.success ? "✅ SUCCESS" : "❌ FAILED"}
 Message: ${response.message}
@@ -116,16 +118,19 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
-                  value: SafeJsonModelErrorPolicy.throwError,
-                  child: Text("Policy: Throw")),
+                value: SafeJsonModelErrorPolicy.throwError,
+                child: Text("Policy: Throw"),
+              ),
               const PopupMenuItem(
-                  value: SafeJsonModelErrorPolicy.logAndDefault,
-                  child: Text("Policy: Log & Fallback")),
+                value: SafeJsonModelErrorPolicy.logAndDefault,
+                child: Text("Policy: Log & Fallback"),
+              ),
               const PopupMenuItem(
-                  value: SafeJsonModelErrorPolicy.silent,
-                  child: Text("Policy: Silent")),
+                value: SafeJsonModelErrorPolicy.silent,
+                child: Text("Policy: Silent"),
+              ),
             ],
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -142,9 +147,10 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.teal.withValues(alpha: 0.5)),
                 ),
-                child: Text(_jsonInput,
-                    style:
-                        const TextStyle(fontFamily: 'monospace', fontSize: 12)),
+                child: Text(
+                  _jsonInput,
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                ),
               ),
               const SizedBox(height: 20),
               _buildSectionTitle("Parsing Result"),
@@ -154,8 +160,10 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
                   color: Colors.teal.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(_result,
-                    style: const TextStyle(fontFamily: 'monospace')),
+                child: Text(
+                  _result,
+                  style: const TextStyle(fontFamily: 'monospace'),
+                ),
               ),
               const SizedBox(height: 24),
               _buildSectionTitle("Scenarios"),
@@ -163,22 +171,19 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _scenarioButton(
-                      "Perfect Success",
-                      {
-                        "success": true,
-                        "message": "Data retrieved successfully",
-                        "data": {
-                          "id": 1,
-                          "full_name": "GreeLogix Expert",
-                          "isActive": true,
-                          "rating": 5,
-                          "tags": ["success", "accurate"],
-                          "posts": [],
-                          "profile": {"age": 25, "score": 100}
-                        }
-                      },
-                      isApiResponse: true),
+                  _scenarioButton("Perfect Success", {
+                    "success": true,
+                    "message": "Data retrieved successfully",
+                    "data": {
+                      "id": 1,
+                      "full_name": "GreeLogix Expert",
+                      "isActive": true,
+                      "rating": 5,
+                      "tags": ["success", "accurate"],
+                      "posts": [],
+                      "profile": {"age": 25, "score": 100},
+                    },
+                  }, isApiResponse: true),
                   _scenarioButton("Optimal JSON", {
                     "id": 1,
                     "full_name": "Antigravity AI",
@@ -186,9 +191,9 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
                     "rating": 5.0,
                     "tags": ["safe", "robust"],
                     "posts": [
-                      {"title": "Hello World"}
+                      {"title": "Hello World"},
                     ],
-                    "profile": {"age": 20, "score": 99}
+                    "profile": {"age": 20, "score": 99},
                   }),
                   _scenarioButton("Type & Case Drift", {
                     "id": "42",
@@ -197,7 +202,7 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
                     "rating": "4.5",
                     "tags": [1, 2, "three"], // Mixed types in list
                     "posts": [{}], // Empty object instead of post
-                    "profile": {"age": "25.5", "score": "88"}
+                    "profile": {"age": "25.5", "score": "88"},
                   }),
                   _scenarioButton("Nulls & Missing", {
                     "id": 101,
@@ -208,7 +213,7 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
                     "id": 202,
                     "isActive": false,
                     "profile": "this should be a map",
-                    "posts": "this should be a list"
+                    "posts": "this should be a list",
                   }),
                 ],
               ),
@@ -223,13 +228,18 @@ ${user != null ? "User ID: ${user.id}\nUser Name: ${user.name}\nActive: ${user.i
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(title,
-          style: const TextStyle(fontWeight: bold, color: Colors.teal)),
+      child: Text(
+        title,
+        style: const TextStyle(fontWeight: bold, color: Colors.teal),
+      ),
     );
   }
 
-  Widget _scenarioButton(String label, Map<String, dynamic> data,
-      {bool isApiResponse = false}) {
+  Widget _scenarioButton(
+    String label,
+    Map<String, dynamic> data, {
+    bool isApiResponse = false,
+  }) {
     return ElevatedButton(
       onPressed: () => isApiResponse
           ? _testApiResponse(label, data)
