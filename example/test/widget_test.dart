@@ -10,15 +10,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:safe_json_mapper_example/main.dart';
 
 void main() {
-  testWidgets('SafeJsonMapper Demo UI loads correctly',
-      (WidgetTester tester) async {
+  testWidgets('SafeJsonMapper Demo UI loads correctly', (
+    WidgetTester tester,
+  ) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
     // Verify that our title and initial text are present.
     expect(find.text('🛡️ SafeJsonMapper Demo'), findsOneWidget);
-    expect(find.text("Select a scenario to witness SafeModel's power"),
-        findsOneWidget);
+    expect(
+      find.text("Select a scenario to witness SafeModel's power"),
+      findsOneWidget,
+    );
 
     // Verify that scenario buttons are present
     expect(find.text('Perfect Success'), findsOneWidget);

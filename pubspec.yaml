@@ -1,6 +1,6 @@
 name: safe_json_mapper
 description: A robust reflection-free JSON mapper for Flutter and Dart. Handles type drift, missing fields, and nested models safely using code generation.
-version: 0.0.5
+version: 0.1.4
 homepage: https://github.com/greelogix/safe_json_mapper
 repository: https://github.com/greelogix/safe_json_mapper
 issue_tracker: https://github.com/greelogix/safe_json_mapper/issues
@@ -12,21 +12,14 @@ topics:
   - code-generation
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: '>=3.0.0'
+  sdk: '>=3.11.0 <4.0.0'
 
 dependencies:
-  meta: ^1.17.0
-  build: ^4.0.3
-  source_gen: ^4.1.1
-  analyzer: ^9.0.0
+  build: ^4.0.11
+  source_gen: ^4.3.0
+  analyzer: ^14.5.0
 
 dev_dependencies:
-  build_runner: ^2.10.4
-  test: ^1.29.0
-  flutter_lints: ^6.0.0
-
-# The package is a pure Dart package, ensuring universal support for:
-# Android, iOS, Web, macOS, Windows, Linux, and Dart VM.
-
-# (No flutter.plugin key needed for pure Dart logic packages)
+  build_runner: ^2.16.2
+  test: ^1.33.0
+  lints: ^6.1.0

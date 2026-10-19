@@ -18,9 +18,9 @@ void main() {
         "rating": 4.5,
         "tags": ["flutter", "dart"],
         "posts": [
-          {"title": "Post 1", "content": "Content 1"}
+          {"title": "Post 1", "content": "Content 1"},
         ],
-        "profile": {"age": 25, "score": 100}
+        "profile": {"age": 25, "score": 100},
       };
 
       final user = SafeJsonMapper.fromJson<User>(json);
@@ -82,8 +82,8 @@ void main() {
           "isActive": true,
           "rating": 5.0,
           "tags": [],
-          "posts": []
-        }
+          "posts": [],
+        },
       };
 
       final response = SafeJsonMapper.fromJson<ApiResponse>(json);
@@ -95,15 +95,17 @@ void main() {
 
     test('Post - Default Values', () {
       final json = {
-        "title": "Minimal Post"
+        "title": "Minimal Post",
         // content is missing
       };
 
       final post = SafeJsonMapper.fromJson<Post>(json);
 
       expect(post.title, "Minimal Post");
-      expect(post.content,
-          "No content available"); // From @SafeJsonField(defaultValue)
+      expect(
+        post.content,
+        "No content available",
+      ); // From @SafeJsonField(defaultValue)
     });
   });
 }

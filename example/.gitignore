@@ -32,6 +32,9 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+*.g.dart
+*.g.part
+/pubspec.lock
 
 # Symbolication related
 app.*.symbols
@@ -43,3 +46,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+!safe_json_mapper_example.g.dart
+!lib/models.g.dart

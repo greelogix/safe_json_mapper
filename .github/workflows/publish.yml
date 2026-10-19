@@ -1,0 +1,135 @@
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+concurrency:
+  group: publish-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out tagged commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Install Flutter
+        uses: flutter-actions/setup-flutter@6e2468fd827c4a7337cd4b835a6049b78bc0bd1f
+        with:
+          channel: stable
+          cache: true
+          cache-sdk: true
+
+      - name: Verify tag matches pubspec version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release tag must match vMAJOR.MINOR.PATCH; received: $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+
+          tag_version="${GITHUB_REF_NAME#v}"
+          package_version="$(sed -nE 's/^version:[[:space:]]*([^[:space:]#]+).*$/\1/p' pubspec.yaml | head -n 1)"
+
+          if [[ -z "$package_version" ]]; then
+            echo "Could not read version from pubspec.yaml." >&2
+            exit 1
+          fi
+
+          if [[ "$tag_version" != "$package_version" ]]; then
+            echo "Tag version $tag_version does not match pubspec version $package_version." >&2
+            exit 1
+          fi
+
+          echo "Validated release version $package_version."
+
+      - name: Install package dependencies
+        run: flutter pub get
+
+      - name: Install example dependencies
+        if: ${{ hashFiles('example/pubspec.yaml') != '' }}
+        working-directory: example
+        run: flutter pub get
+
+      - name: Verify generated sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          dart run build_runner build
+          if [[ -f example/pubspec.yaml && -d example/lib ]]; then
+            (cd example && dart run build_runner build)
+          fi
+          git diff --exit-code
+
+      - name: Check formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          format_targets=()
+          for target in lib test example/lib example/test; do
+            if [[ -d "$target" ]]; then
+              format_targets+=("$target")
+            fi
+          done
+          if (( ${#format_targets[@]} == 0 )); then
+            echo "No Dart source directories found." >&2
+            exit 1
+          fi
+          dart format --output=none --set-exit-if-changed "${format_targets[@]}"
+
+      - name: Analyze package
+        run: flutter analyze
+
+      - name: Run package tests
+        if: ${{ hashFiles('test/**') != '' }}
+        run: dart test
+
+      - name: Run example tests
+        if: ${{ hashFiles('example/test/**') != '' }}
+        working-directory: example
+        run: flutter test
+
+      - name: Validate package publication
+        run: dart pub publish --dry-run
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: pub.dev
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out tagged release
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Configure temporary pub.dev authentication
+        uses: dart-lang/setup-dart@7654d458321ee25acccccfdb86cd48bd95768ff1
+        with:
+          sdk: stable
+
+      - name: Install Flutter
+        uses: flutter-actions/setup-flutter@6e2468fd827c4a7337cd4b835a6049b78bc0bd1f
+        with:
+          channel: stable
+          cache: true
+          cache-sdk: true
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Validate package publication
+        run: dart pub publish --dry-run
+
+      - name: Publish package
+        run: dart pub publish --force

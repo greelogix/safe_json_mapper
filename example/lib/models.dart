@@ -34,8 +34,6 @@ class User {
     required this.tags,
     required this.posts,
   });
-
-  static void register() => _registerUser();
 }
 
 @SafeJson()
@@ -48,13 +46,7 @@ class Profile {
   @SafeNum(defaultValue: 0)
   final num score;
 
-  Profile({
-    required this.age,
-    this.bio,
-    required this.score,
-  });
-
-  static void register() => _registerProfile();
+  Profile({required this.age, this.bio, required this.score});
 }
 
 @SafeJson()
@@ -64,12 +56,7 @@ class Post {
   @SafeField(defaultValue: 'No content available')
   final String content;
 
-  Post({
-    required this.title,
-    required this.content,
-  });
-
-  static void register() => _registerPost();
+  Post({required this.title, required this.content});
 }
 
 @SafeJson()
@@ -78,19 +65,13 @@ class ApiResponse {
   final String message;
   final User? data;
 
-  ApiResponse({
-    required this.success,
-    required this.message,
-    this.data,
-  });
-
-  static void register() => _registerApiResponse();
+  ApiResponse({required this.success, required this.message, this.data});
 }
 
 // Function to initialize all models
 void initModels() {
-  User.register();
-  Profile.register();
-  Post.register();
-  ApiResponse.register();
+  registerUser();
+  registerProfile();
+  registerPost();
+  registerApiResponse();
 }

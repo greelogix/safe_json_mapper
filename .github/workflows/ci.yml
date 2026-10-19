@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Install Flutter
+        uses: flutter-actions/setup-flutter@6e2468fd827c4a7337cd4b835a6049b78bc0bd1f
+        with:
+          channel: stable
+          cache: true
+          cache-sdk: true
+
+      - name: Install package dependencies
+        run: flutter pub get
+
+      - name: Install example dependencies
+        if: ${{ hashFiles('example/pubspec.yaml') != '' }}
+        working-directory: example
+        run: flutter pub get
+
+      - name: Verify generated sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          dart run build_runner build
+          if [[ -f example/pubspec.yaml && -d example/lib ]]; then
+            (cd example && dart run build_runner build)
+          fi
+          git diff --exit-code
+
+      - name: Check formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          format_targets=()
+          for target in lib test example/lib example/test; do
+            if [[ -d "$target" ]]; then
+              format_targets+=("$target")
+            fi
+          done
+          if (( ${#format_targets[@]} == 0 )); then
+            echo "No Dart source directories found." >&2
+            exit 1
+          fi
+          dart format --output=none --set-exit-if-changed "${format_targets[@]}"
+
+      - name: Analyze package
+        run: flutter analyze
+
+      - name: Run package tests
+        if: ${{ hashFiles('test/**') != '' }}
+        run: dart test
+
+      - name: Run example tests
+        if: ${{ hashFiles('example/test/**') != '' }}
+        working-directory: example
+        run: flutter test
+
+      - name: Validate package publication
+        run: dart pub publish --dry-run
